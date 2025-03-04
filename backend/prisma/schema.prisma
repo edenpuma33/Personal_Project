@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id          Int         @id @default(autoincrement())
+  name        String
+  description String      @db.Text
+  price       Float
+  image       Json
+  category    String
+  subCategory String
+  sizes       Json
+  bestSeller  Boolean
+  createdAt   DateTime    @default(now()) @db.Timestamp(0)
+  updatedAt   DateTime    @updatedAt @db.Timestamp(0)
+  Cart        Cart[]
+  OrderItems  OrderItem[]
+
+  @@index([category])
+  @@index([subCategory])
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now()) @db.Timestamp(0)
+  updatedAt DateTime @updatedAt @db.Timestamp(0)
+  Cart      Cart[]
+  Orders    Order[]
+
+  @@index([email])
+}
+
+model Cart {
+  id        Int     @id @default(autoincrement())
+  UserId    Int
+  user      User    @relation(fields: [UserId], references: [id], onDelete: Cascade)
+  ProductId Int
+  product   Product @relation(fields: [ProductId], references: [id], onDelete: Cascade)
+  sizes     Json
+  quantity  Int     @default(1)
+}
+
+model Order {
+  id              Int         @id @default(autoincrement())
+  UserId          Int
+  user            User        @relation(fields: [UserId], references: [id], onDelete: Cascade)
+  address         Json
+  amount          Int
+  paymentMethod   String      @default("COD")
+  payment         Boolean     @default(false)
+  date            DateTime    @default(now()) @db.Timestamp(0)
+  status          String      @default("Pending")
+  stripeSessionId String?     @db.VarChar(255)
+  items           OrderItem[]
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  OrderId   Int
+  order     Order   @relation(fields: [OrderId], references: [id], onDelete: Cascade)
+  ProductId Int
+  product   Product @relation(fields: [ProductId], references: [id], onDelete: Cascade)
+  size      String
+  quantity  Int     @default(1)
+}
