@@ -7,6 +7,7 @@ const Login = ({ setToken }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  // จัดการการ submit ฟอร์มเพื่อ login เข้าสู่ระบบ admin
   const onSubmitHandler = async (e) => {
     try {
       e.preventDefault();
@@ -20,7 +21,6 @@ const Login = ({ setToken }) => {
         toast.error(response.data.message);
       }
     } catch (error) {
-      console.log(error);
       toast.error(error.message);
     }
   };

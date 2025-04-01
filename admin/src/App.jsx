@@ -28,8 +28,10 @@ const App = () => {
 
   useEffect(() => {
     if (token) {
+        // ถ้ามี token: บันทึกใน localStorage ภายใต้ key "adminToken"
       localStorage.setItem("adminToken", token);
     } else {
+      // ถ้าไม่มี: ลบ "adminToken" ออกจาก localStorage
       localStorage.removeItem("adminToken");
     }
   }, [token]);

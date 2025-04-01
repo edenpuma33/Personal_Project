@@ -10,11 +10,11 @@ const Users = ({ token }) => {
   const fetchUsers = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`${backendUrl}/api/user/list`, {
-        // You’ll need to create this backend endpoint
+      const response = await axios.get(`${backendUrl}/api/manageuser/list`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.data.success) {
+        // อัปเดต users ด้วยข้อมูลจาก response.data.users
         setUsers(response.data.users);
       } else {
         toast.error(response.data.message);
@@ -28,10 +28,13 @@ const Users = ({ token }) => {
 
   const deleteUser = async (userId) => {
     try {
-      const response = await axios.delete(`${backendUrl}/api/user/delete`, {
-        data: { id: userId },
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.delete(
+        `${backendUrl}/api/manageuser/delete`,
+        {
+          data: { id: userId },
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       if (response.data.success) {
         toast.success("User deleted successfully");
         setUsers((prev) => prev.filter((user) => user.id !== userId));

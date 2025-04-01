@@ -18,14 +18,18 @@ const Orders = ({ token }) => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       if (response.data.success) {
+        // อัปเดต orders ด้วยข้อมูลจาก response.data.orders (ถ้าไม่มีให้เป็น array ว่าง)
         setOrders(response.data.orders || []);
       }
     } catch (error) {
+      console.log(error);
+      toast.error(error.message);
     } finally {
       setIsLoading(false);
     }
   };
 
+  // อัปเดตสถานะคำสั่งซื้อใน backend และ UI
   const handleStatusChange = async (orderId, newStatus) => {
     try {
       const response = await axios.post(
@@ -36,7 +40,7 @@ const Orders = ({ token }) => {
 
       if (response.data.success) {
         toast.success("Order status updated successfully");
-        // Update the local state to reflect the new status
+        // อัปเดต orders โดยเปลี่ยน status ของคำสั่งซื้อที่มี id ตรงกับ orderId
         setOrders((prevOrders) =>
           prevOrders.map((order) =>
             order.id === orderId ? { ...order, status: newStatus } : order
